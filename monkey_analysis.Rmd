@@ -1,0 +1,67 @@
+---
+title: "monkey_analysis"
+output: html_document
+---
+
+```{r}
+library(dplyr)
+library(ggplot2)
+```
+
+
+```{r}
+data1 = read.csv('~/proj/monkey/quincy.csv')
+data2 = read.csv('~/proj/monkey/wahwah.csv')
+data1$Monkey = "Quincy"
+data2$Monkey = "WahWah"
+data = rbind(data1,data2)
+```
+
+Modify data to match the types in the header
+
+```{r}
+data = data %>%
+  mutate(StimLoc=factor(StimLoc,levels=c(1,2),labels=c("UpLeft","DownLeft")),
+         Lever=factor(Lever,levels=c(0,1),labels=c("NoResp","Released")),
+         Corr=factor(Corr,levels=c(0,1),labels=c("Incorrect","Correct")),
+         Rewarded=factor(Rewarded,levels=c(0,1),labels=c("NoReward","Reward")),
+         Blink=factor(Blink,levels=c(0,1),labels=c("NoBlink","Blink")),
+         Valid=factor(Valid,levels=c(0,1),labels=c("Invalid","Valid")))
+data = data %>%
+  filter(Valid=="Valid")
+```
+
+```{r}
+mudata = data %>%
+  group_by(SessNum,Monkey) %>%
+  summarise(mu=mean(as.numeric(Corr)-1))
+ggplot(mudata, aes(SessNum,mu,color=Monkey)) +
+  geom_line()
+```
+
+```{r}
+# Split data into DMS and DMC tasks
+dms = data %>%
+  filter(SessNum<8)
+dmc = data %>%
+  filter(SessNum>=8)
+```
+
+DMS Task Analysis: 
+```{r}
+# Check that % correct is about right
+dms_ = dms %>%
+  group_by(SamDir,Monkey) %>%
+  summarise(mu=mean(Corr)-1)
+ggplot(data=dms_,aes(SamDir,mu,color=Monkey)) +
+  geom_bar(stat="identity",position="dodge")
+```
+
+Checking things
+```{r}
+test = dms %>%
+  filter(Corr=="Correct")
+```
+
+
+
