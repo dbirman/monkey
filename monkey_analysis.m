@@ -2,41 +2,11 @@
 
 load('~/proj/monkey/learning_experiment_behavior_matrix.mat');
 
-% Header:
-%    1        2         3          4           5         6        7
-% Session - Trial - SessTrial - StimLoc - SampleDir - TestDir - Lever - 
-%    8        9         10         11
-% Correct - Rewarded - Blink - Valid Trial
-
-header = {'SessNum','Trial','SessTrial','StimLoc','SamDir','TesDir','Lever','Corr','Rewarded','Blink','Valid'};
-%% Re-write as csv
-fname1 = '~/proj/monkey/wahwah.csv';
-fname2 = '~/proj/monkey/quincy.csv';
-
-data1 = x.beh{1};
-data2 = x.beh{2};
-
-csvwriteh(fname1,data1,header);
-csvwriteh(fname2,data2,header);
 
 %% Load Data
 
-data1 = x.beh{1};
-data1(:,end+1) = 1;
-data1 = fil(data1,1,'>',7); % DMC
-data1(:,2) = data1(:,2)-min(data1(:,2))+1; % revert trial to 1
-data2 = x.beh{2};
-data2(:,end+1) = 2;
-data2 = fil(data2,1,'>',7); % DMC
-data2(:,2) = data2(:,2)-min(data2(:,2))+1;
+data = monkey_tolong();
 
-data = [data1;data2];
-%% Clean
-% Remove invalid trials
-data = sel(data,11,1);
-data = data(:,1:10); % remove valid trial col
-% x = fil(data,1,'<=',7); % for DMS
-data = fil(data,1,'>',7); % for DMC
 
 %% Compute, for trial window, average across monkeys, DMC performance.
 %%
