@@ -14,8 +14,8 @@ max_t = max(data(:,2));
 
 % Now the idea is to build a big matrix that is trial x rot1 x rot2 where
 % each value is the across-subject proportion of pressing for that
-% rotation. We don't have enough data on each trial, so we bin across 9
-% trials
+% rotation. We don't have enough data on each trial, so we bin across a
+% bunch of trials
 win = 72;
 
 out = zeros(max_t,6,6);
